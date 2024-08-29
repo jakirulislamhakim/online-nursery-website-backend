@@ -1,7 +1,6 @@
 import { FilterQuery, Query } from 'mongoose';
 
 // QueryBuilder reusable class for search, sort, paginate, filter , fieldsFiltering
-// WARNING: when you use the QueryBuilder . please read the code how it works
 class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
   public query: Record<string, unknown>;
@@ -36,6 +35,7 @@ class QueryBuilder<T> {
       'page',
       'fields',
     ];
+    // remove obj property from new copy queryObj
     excludeQueryProperty.forEach((el) => delete queryObj[el]);
 
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
