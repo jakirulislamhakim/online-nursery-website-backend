@@ -1,17 +1,14 @@
 import { Router } from 'express';
+import { ProductRoutes } from '../modules/products/product.route';
 
 const router = Router();
 
 const moduleRoutes = [
-  // {
-  //   path: '/students',
-  //   route: StudentRoutes,
-  // },
-  // FIXME : Route
+  {
+    path: '/products',
+    route: ProductRoutes,
+  },
 ];
-
-// router.use('/students', studentRoutes)
-// router.use('/users', userRoutes)
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
 
