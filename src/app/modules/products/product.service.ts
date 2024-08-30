@@ -14,8 +14,6 @@ const createProductIntoDB = async (payload: TPlant) => {
 };
 
 const getAllProductFromDB = async (query: Record<string, unknown>) => {
-  // fixme --> write logic for query param
-
   const productQuery = new QueryBuilder(Product.find(), query)
     .search(searchableFields)
     .filter()

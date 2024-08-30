@@ -15,7 +15,7 @@ const createProduct = catchAsync(async (req, res) => {
 });
 
 const getAllProduct = catchAsync(async (req, res) => {
-  const query = req.query
+  const query = req.query;
   const data = await productServices.getAllProductFromDB(query);
 
   sendResponse(res, {
@@ -61,7 +61,7 @@ const deleteSpecificProduct = catchAsync(async (req, res) => {
   sendResponse(res, {
     data,
     statusCode: httpStatus.OK,
-    message: 'Successfully deleted  product.',
+    message: 'Successfully deleted the product.',
   });
 });
 
