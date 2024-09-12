@@ -1,6 +1,5 @@
 import { model, Schema } from 'mongoose';
 import { TPlant } from './product.interface';
-import { Plant_Categories } from './product.constant';
 
 const plantSchema = new Schema<TPlant>(
   {
@@ -8,7 +7,6 @@ const plantSchema = new Schema<TPlant>(
     price: { type: Number, required: true },
     category: {
       type: String,
-      enum: Object.values(Plant_Categories), // Validate categories
       required: true,
     },
     quantity: { type: Number, required: true },

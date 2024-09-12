@@ -4,10 +4,19 @@ import { TPlant } from './product.interface';
 import { Product } from './product.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { searchableFields } from './product.constant';
+import { Category } from '../category/category.model';
 
 const createProductIntoDB = async (payload: TPlant) => {
-  // check the category is exists
-  // fixme --> write logic for category is exists in db
+  // check category is value match with category
+  const isValidCategory = await Category.findOne({
+    category: payload.category,
+  });
+  if (!isValidCategory) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Invalid category! Please use existing category.',
+    );
+  }
 
   const result = await Product.create(payload);
   return result;
@@ -17,15 +26,23 @@ const getAllProductFromDB = async (query: Record<string, unknown>) => {
   const productQuery = new QueryBuilder(Product.find(), query)
     .search(searchableFields)
     .filter()
-    .paginate()
     .sort();
 
-  const result = await productQuery.modelQuery;
+  // Count total products matching search and filter criteria
+  const totalProductsCount = await productQuery.countTotal();
 
-  if (!result.length) {
-    throw new AppError(httpStatus.NOT_FOUND, 'No products found!');
+  // Now apply pagination based on the query (limit and page)
+  productQuery.paginate();
+
+  const products = await productQuery.modelQuery;
+
+  if (!products.length) {
+    throw new AppError(httpStatus.NO_CONTENT, 'No products found!');
   }
-  return result;
+  return {
+    products,
+    totalProductsCount,
+  };
 };
 
 const getSpecificProductFromDB = async (id: string) => {
@@ -41,6 +58,16 @@ const updateSpecificProductIntoDB = async (
   id: string,
   payload: Partial<TPlant>,
 ) => {
+  const isValidCategory = await Category.findOne({
+    category: payload.category,
+  });
+  if (!isValidCategory) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Invalid category! Please use existing category.',
+    );
+  }
+
   const result = await Product.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,

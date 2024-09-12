@@ -1,8 +1,4 @@
 import { z } from 'zod';
-import { Plant_Categories } from './product.constant';
-
-// Create a union type for category values
-type PlantCategory = (typeof Plant_Categories)[keyof typeof Plant_Categories];
 
 const productValidationSchema = z.object({
   body: z.object({
@@ -10,10 +6,9 @@ const productValidationSchema = z.object({
       .string()
       .nonempty({ message: 'Title is required and cannot be empty.' }),
     price: z.number().positive({ message: 'Price must be a positive number.' }),
-    category: z.enum(
-      Object.values(Plant_Categories) as [PlantCategory, ...PlantCategory[]],
-      { message: 'Category must be one of the predefined values.' },
-    ),
+    category: z.string().nonempty({
+      message: 'Category must be one of the predefined values.',
+    }),
     quantity: z
       .number()
       .int({ message: 'Quantity must be an integer.' })

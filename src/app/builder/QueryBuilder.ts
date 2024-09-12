@@ -67,6 +67,12 @@ class QueryBuilder<T> {
 
     return this;
   }
+
+  countTotal() {
+    const filter = this.modelQuery.getFilter();
+    const count = this.modelQuery.model.countDocuments(filter);
+    return count;
+  }
 }
 
 export default QueryBuilder;

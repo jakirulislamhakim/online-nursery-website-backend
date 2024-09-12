@@ -54,5 +54,5 @@ export const categoryControllers = {
   createCategory,
   getAllCategory,
   updateSpecificCategory,
-  deletedSpecificCategory
+  deletedSpecificCategory,
 };
