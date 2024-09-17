@@ -4,6 +4,17 @@ import { TCategory } from './category.interface';
 import { Category } from './category.model';
 
 const createCategoryIntoDB = async (payload: TCategory) => {
+  const isExistsCategory = await Category.findOne({
+    category: payload.category,
+  });
+
+  if (isExistsCategory) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `${payload.category} category is already exists`,
+    );
+  }
+
   const result = await Category.create(payload);
   return result;
 };
