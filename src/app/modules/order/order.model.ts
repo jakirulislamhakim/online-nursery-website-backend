@@ -34,7 +34,7 @@ const orderSchema = new Schema<TOrder>(
       type: String,
       required: true,
     },
-    orderNumber: {
+    orderId: {
       type: String,
       required: true,
       unique: true,
@@ -65,16 +65,27 @@ const orderSchema = new Schema<TOrder>(
     paymentStatus: {
       type: String,
       enum: Object.values(Payment_Status),
+      default: Payment_Status.PENDING,
       required: true,
     },
 
     orderStatus: {
       type: String,
       enum: Object.values(Order_Status),
+      default: Order_Status.PENDING,
       required: true,
     },
 
-    orderItems: [orderItemSchema],
+    orderItems: {
+      type: [orderItemSchema],
+      required: true,
+      validate: {
+        validator: (val: TOrderItem[]): boolean => {
+          return val.length > 0;
+        },
+        message: 'Order must have at least one item.',
+      },
+    },
 
     totalPrice: {
       type: Number,

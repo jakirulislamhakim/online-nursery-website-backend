@@ -26,59 +26,60 @@ const orderItemValidationSchema = z
   });
 
 // Zod schema for Order
-const orderValidationSchema = z
-  .object({
-    fullName: z
-      .string()
-      .min(2, { message: 'Full name must be at least 2 characters long' }),
-    orderNumber: z.string().min(1, { message: 'Order number is required' }),
-    email: z.string().email({ message: 'Invalid email address' }),
-    phoneNumber: z
-      .string()
-      .regex(/\b(\+8801[3-9]\d{8}|01[3-9]\d{8})\b/, {
+const orderValidationSchema = z.object({
+  body: z
+    .object({
+      fullName: z
+        .string()
+        .min(2, { message: 'Full name must be at least 2 characters long' }),
+      orderId: z.string().optional(),
+      email: z.string().email({ message: 'Invalid email address' }),
+      phoneNumber: z.string().regex(/\b(\+8801[3-9]\d{8}|01[3-9]\d{8})\b/, {
         message: 'Invalid phone number format',
       }),
-    city: z.string().min(1, { message: 'City is required' }),
-    address: z
-      .string()
-      .min(5, { message: 'Address must be at least 5 characters long' }),
-    paymentMethod: z.enum(
-      Object.values(Payment_Method) as [string, ...string[]],
-      { invalid_type_error: 'Invalid payment method' },
-    ),
-    paymentStatus: z.enum(
-      Object.values(Payment_Status) as [string, ...string[]],
+      city: z.string().min(1, { message: 'City is required' }),
+      address: z
+        .string()
+        .min(5, { message: 'Address must be at least 5 characters long' }),
+      paymentMethod: z.enum(
+        Object.values(Payment_Method) as [string, ...string[]],
+        { invalid_type_error: 'Invalid payment method' },
+      ),
+      paymentStatus: z
+        .enum(Object.values(Payment_Status) as [string, ...string[]], {
+          invalid_type_error: 'Invalid payment status',
+        })
+        .optional(),
+      orderStatus: z
+        .enum(Object.values(Order_Status) as [string, ...string[]], {
+          invalid_type_error: 'Invalid order status',
+        })
+        .optional(),
+      orderItems: z
+        .array(orderItemValidationSchema)
+        .nonempty({ message: 'Order must contain at least one item' }),
+      totalPrice: z
+        .number()
+        .positive({ message: 'Total price must be a positive number' }),
+      shippingCost: z
+        .number()
+        .nonnegative({ message: 'Shipping price must be a positive number' }),
+    })
+    .refine(
+      (data) => {
+        const calculatedTotal = data.orderItems.reduce(
+          (sum, item) => sum + item.totalPrice,
+          0,
+        );
+        return data.totalPrice === calculatedTotal + data.shippingCost;
+      },
       {
-        invalid_type_error: 'Invalid payment status',
+        message:
+          'Order total price must equal the sum of all item total prices and shipping cost',
+        path: ['totalPrice'],
       },
     ),
-    orderStatus: z.enum(Object.values(Order_Status) as [string, ...string[]], {
-      invalid_type_error: 'Invalid order status',
-    }),
-    orderItems: z
-      .array(orderItemValidationSchema)
-      .nonempty({ message: 'Order must contain at least one item' }),
-    totalPrice: z
-      .number()
-      .positive({ message: 'Total price must be a positive number' }),
-    shippingCost: z
-      .number()
-      .nonnegative({ message: 'Shipping price must be a positive number' }),
-  })
-  .refine(
-    (data) => {
-      const calculatedTotal = data.orderItems.reduce(
-        (sum, item) => sum + item.totalPrice,
-        0,
-      );
-      return data.totalPrice === calculatedTotal + data.shippingCost;
-    },
-    {
-      message:
-        'Order total price must equal the sum of all item total prices and shipping cost',
-      path: ['totalPrice'],
-    },
-  );
+});
 
 export const orderValidation = {
   orderValidationSchema,
