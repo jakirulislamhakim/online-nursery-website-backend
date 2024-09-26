@@ -1,4 +1,3 @@
-
 export type TPlant = {
   title: string;
   price: number;
@@ -7,4 +6,7 @@ export type TPlant = {
   description: string;
   rating: number;
   image: string;
+  lightRequirements: string;
+  growthRate: string;
+  soilType: string;
 };

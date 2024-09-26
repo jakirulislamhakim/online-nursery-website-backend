@@ -26,7 +26,8 @@ const getAllProductFromDB = async (query: Record<string, unknown>) => {
   const productQuery = new QueryBuilder(Product.find(), query)
     .search(searchableFields)
     .filter()
-    .sort();
+    .sort()
+    .fields();
 
   // Count total products matching search and filter criteria
   const totalProductsCount = await productQuery.countTotal();
@@ -61,7 +62,7 @@ const updateSpecificProductIntoDB = async (
   const isValidCategory = await Category.findOne({
     category: payload.category,
   });
-  if (!isValidCategory) {
+  if (payload.category && !isValidCategory) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       'Invalid category! Please use existing category.',

@@ -21,6 +21,15 @@ const productValidationSchema = z.object({
       .min(0, { message: 'Rating must be at least 0.' })
       .max(5, { message: 'Rating cannot exceed 5.' }),
     image: z.string().url({ message: 'Image must be a valid URL.' }),
+    lightRequirements: z.string().nonempty({
+      message: 'LightRequirements is required and cannot be empty.',
+    }),
+    growthRate: z
+      .string()
+      .nonempty({ message: 'GrowthRate is required and cannot be empty.' }),
+    soilType: z
+      .string()
+      .nonempty({ message: 'SoilType is required and cannot be empty.' }),
   }),
 });
 

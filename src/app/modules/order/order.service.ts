@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { Product } from '../products/product.model';
 import { TOrder } from './order.interface';
-import {  Payment_Method, Payment_Status } from './order.constant';
+import { Payment_Method, Payment_Status } from './order.constant';
 import { Order } from './order.model';
 import { orderIdGenerator } from './order.utils';
 import mongoose from 'mongoose';
@@ -65,7 +65,7 @@ const createOrderIntoDB = async (payload: TOrder) => {
     // Commit the transaction
     await session.commitTransaction();
 
-    return order;
+    return order[0];
   } catch (error) {
     // Rollback the transaction in case of an error
     await session.abortTransaction();

@@ -29,9 +29,10 @@ const getAllCategoryFromDB = async () => {
 };
 
 const updateSpecificCategoryIntoDB = async (id: string, payload: TCategory) => {
-  const result = await Category.findByIdAndUpdate(id, payload).select(
-    'category _id',
-  );
+  const result = await Category.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  }).select('category _id');
 
   if (!result) {
     throw new AppError(httpStatus.NOT_FOUND, 'The category is not found');

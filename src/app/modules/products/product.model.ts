@@ -13,6 +13,9 @@ const plantSchema = new Schema<TPlant>(
     description: { type: String, required: true },
     rating: { type: Number, required: true },
     image: { type: String, required: true },
+    lightRequirements: { type: String, required: true },
+    growthRate: { type: String, required: true },
+    soilType: { type: String, required: true },
   },
   {
     timestamps: true,
