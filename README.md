@@ -61,7 +61,7 @@ The backend of the Online Nursery Website is built using **Node.js** and **Expre
    ```
 2. into the project:
    ```bash
-   git clone online-nursery-website-backend
+   cd online-nursery-website-backend
    ```
 3. follow env.example file
 4. start the project
